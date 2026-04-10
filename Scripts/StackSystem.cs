@@ -59,4 +59,52 @@ public static class StackSystem
 		BoxController support = FindSupportFor(box);
 		return support?.StackLevel ?? 0;
 	}
+
+	public static List<BoxController> GetBoxesAboveRecursive(BoxController root)
+	{
+		List<BoxController> result = new();
+		HashSet<ulong> visited = new();
+		CollectAbove(root, result, visited);
+		return result;
+	}
+
+	private static void CollectAbove(BoxController support, List<BoxController> result, HashSet<ulong> visited)
+	{
+		foreach (BoxController box in Boxes)
+		{
+			if (!GodotObject.IsInstanceValid(box))
+			{
+				continue;
+			}
+
+			if (!visited.Add(box.GetInstanceId()))
+			{
+				continue;
+			}
+
+			if (box == support)
+			{
+				continue;
+			}
+
+			if (box.StackLevel != support.StackLevel + 1)
+			{
+				continue;
+			}
+
+			if (box.GlobalPosition.DistanceTo(support.GlobalPosition) > box.SupportSnapDistance)
+			{
+				continue;
+			}
+
+			BoxController supportOfBox = FindSupportFor(box);
+			if (supportOfBox != support)
+			{
+				continue;
+			}
+
+			result.Add(box);
+			CollectAbove(box, result, visited);
+		}
+	}
 }

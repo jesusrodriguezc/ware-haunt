@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 
 public partial class BoxController : RigidBody2D, IStackEntity
@@ -83,13 +84,26 @@ public partial class BoxController : RigidBody2D, IStackEntity
 			return;
 		}
 
+        List<BoxController> movedBoxes = [this, .. StackSystem.GetBoxesAboveRecursive(this)];
+
+        float totalMass = 0.0f;
+        foreach (BoxController box in movedBoxes)
+        {
+            totalMass += Mathf.Max(0.01f, box.Mass);
+        }
+
 		float massFactor = Config?.PushMassFactor ?? 1.0f;
 		float frictionTile = GetGroundTileFriction();
 		float finalFriction = Mathf.Sqrt(_baseDragFriction * frictionTile);
 		float safeFriction = Mathf.Max(0.05f, finalFriction);
-		float scaledMagnitude = impulse.Length() / (safeFriction * massFactor * Mass);
-		Vector2 adjustedImpulse = impulse.Normalized() * scaledMagnitude;
-		ApplyCentralImpulse(adjustedImpulse);
+        float deltaV = impulse.Length() / (safeFriction * massFactor * totalMass);
+        Vector2 direction = impulse.Normalized();
+
+        foreach (BoxController box in movedBoxes)
+        {
+            float boxImpulseMagnitude = deltaV * Mathf.Max(0.01f, box.Mass);
+            box.ApplyCentralImpulse(direction * boxImpulseMagnitude);
+        }
 	}
 
 	private void ApplyGroundFrictionDamp()
@@ -137,20 +151,6 @@ public partial class BoxController : RigidBody2D, IStackEntity
 			_unsupportedSeconds = 0.0f;
 			ApplyPseudoHeightVisual();
 		}
-	}
-
-	private void FollowSupportMotion()
-	{
-		if (_supportBox == null || !IsInstanceValid(_supportBox))
-		{
-			return;
-		}
-
-		_isFollowingSupport = true;
-		Freeze = true;
-		LinearVelocity = Vector2.Zero;
-		AngularVelocity = 0.0f;
-		GlobalPosition = _supportBox.GlobalPosition + _supportOffset;
 	}
 
 	private void ApplyPseudoHeightVisual()
