@@ -7,6 +7,7 @@ public partial class StackEntityBase
 	private readonly CollisionShape2D _interactionCollider;
 	private readonly Sprite2D _shadowSprite;
 	private readonly float _baseVisualY;
+	private readonly Label _stackLevelLabel;
 
 	public StackEntityBase(Node2D owner, Node2D visualRoot, CollisionShape2D interactionCollider, Sprite2D shadowSprite)
 	{

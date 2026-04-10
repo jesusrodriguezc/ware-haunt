@@ -1,10 +1,6 @@
-[gd_resource type="Resource" script_class="BoxConfig" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="BoxConfig" format=3 uid="uid://ca1vfpuannikm"]
 
-[ext_resource type="Script" path="res://Scripts/BoxConfig.cs" id="1_cfg"]
+[ext_resource type="Script" uid="uid://dsbh83pqwki66" path="res://Scripts/BoxConfig.cs" id="1_cfg"]
 
 [resource]
 script = ExtResource("1_cfg")
-DragFriction = 1.0
-PushMassFactor = 1.0
-MinLinearDamp = 2.0
-MaxLinearDamp = 14.0

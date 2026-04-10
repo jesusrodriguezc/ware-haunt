@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://dvtggxil58niq" path="res://Scripts/BoxController.cs" id="1_11oxs"]
 [ext_resource type="Shader" uid="uid://bng1en1xa0xco" path="res://Shaders/2DPixelOutline.gdshader" id="1_lvjma"]
 [ext_resource type="Texture2D" uid="uid://c6m0nbcjuhxor" path="res://Sprites/Box_PH.png" id="1_n5ega"]
-[ext_resource type="Resource" path="res://Assets/BoxDefaultConfig.tres" id="2_drc2d"]
+[ext_resource type="Resource" uid="uid://ca1vfpuannikm" path="res://Assets/BoxDefaultConfig.tres" id="2_drc2d"]
 [ext_resource type="Texture2D" uid="uid://bi8iy8kax7mmq" path="res://Sprites/Shadow_PH.png" id="2_fmf8y"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lvjma"]
