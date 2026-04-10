@@ -1,0 +1,69 @@
+[gd_scene format=3 uid="uid://bskxcn5p7hyht"]
+
+[ext_resource type="Script" uid="uid://dvtggxil58niq" path="res://Scripts/BoxController.cs" id="1_11oxs"]
+[ext_resource type="Shader" uid="uid://bng1en1xa0xco" path="res://Shaders/2DPixelOutline.gdshader" id="1_lvjma"]
+[ext_resource type="Texture2D" uid="uid://c6m0nbcjuhxor" path="res://Sprites/Box_PH.png" id="1_n5ega"]
+[ext_resource type="Resource" path="res://Assets/BoxDefaultConfig.tres" id="2_drc2d"]
+[ext_resource type="Texture2D" uid="uid://bi8iy8kax7mmq" path="res://Sprites/Shadow_PH.png" id="2_fmf8y"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lvjma"]
+shader = ExtResource("1_lvjma")
+shader_parameter/outline_color = Color(0.47843137, 0.1882353, 0.27058825, 1)
+shader_parameter/corner_pixel = true
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_iufkg"]
+size = Vector2(16, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_interaction"]
+size = Vector2(16, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
+size = Vector2(12, 2)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ceiling"]
+size = Vector2(12, 2)
+
+[node name="Box" type="RigidBody2D" unique_id=823009722]
+y_sort_enabled = true
+collision_layer = 2
+collision_mask = 3
+mass = 20.0
+gravity_scale = 0.0
+lock_rotation = true
+linear_damp = 6.0
+script = ExtResource("1_11oxs")
+Config = ExtResource("2_drc2d")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=984119057]
+material = SubResource("ShaderMaterial_lvjma")
+position = Vector2(0, -4)
+texture = ExtResource("1_n5ega")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1029736859]
+shape = SubResource("RectangleShape2D_iufkg")
+
+[node name="InteractionArea" type="Area2D" parent="." unique_id=506998757]
+collision_layer = 32
+
+[node name="InteractionShape" type="CollisionShape2D" parent="InteractionArea" unique_id=572804316]
+shape = SubResource("RectangleShape2D_interaction")
+
+[node name="SupportFloor" type="Area2D" parent="." unique_id=215901578]
+collision_layer = 8
+collision_mask = 16
+
+[node name="SupportFloorShape" type="CollisionShape2D" parent="SupportFloor" unique_id=687466503]
+position = Vector2(0, 4)
+shape = SubResource("RectangleShape2D_floor")
+
+[node name="SupportCeiling" type="Area2D" parent="." unique_id=605361644]
+collision_layer = 16
+collision_mask = 8
+
+[node name="SupportCeilingShape" type="CollisionShape2D" parent="SupportCeiling" unique_id=1401813879]
+position = Vector2(0, -4)
+shape = SubResource("RectangleShape2D_ceiling")
+
+[node name="Shadow" type="Sprite2D" parent="." unique_id=512261517]
+modulate = Color(0, 0, 0, 0)
+texture = ExtResource("2_fmf8y")
