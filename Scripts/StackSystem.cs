@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 public static class StackSystem
 {
+	private const int LevelLayerStartBit = 20;
+	private const int MaxSupportedStackLevel = 8;
+	public const int MaxStackLevel = MaxSupportedStackLevel;
+
 	public static int PlayerStackLevel { get; private set; } = 0;
 
 	private static readonly List<BoxController> Boxes = new();
@@ -23,6 +27,12 @@ public static class StackSystem
 	public static void SetPlayerStackLevel(int stackLevel)
 	{
 		PlayerStackLevel = stackLevel;
+	}
+
+	public static uint GetLevelCollisionBit(int stackLevel)
+	{
+		int fixedStackLevel = Mathf.Clamp(stackLevel, 0, MaxSupportedStackLevel);
+		return 1u << (LevelLayerStartBit + fixedStackLevel);
 	}
 
     public static BoxController FindSupportFor(BoxController candidate)

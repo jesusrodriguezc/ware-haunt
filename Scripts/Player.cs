@@ -19,6 +19,10 @@ public partial class Player : CharacterBody2D
 
 	public override void _Ready()
 	{
+		MotionMode = MotionModeEnum.Floating;
+		PlatformFloorLayers = 0;
+		PlatformWallLayers = 0;
+
 		_stackBase = new StackEntityBase(
 			this,
 			GetNodeOrNull<Node2D>("Sprite"),
@@ -29,7 +33,22 @@ public partial class Player : CharacterBody2D
 
 	public override void _PhysicsProcess(double delta)
 	{
-		StackSystem.SetPlayerStackLevel(PlayerStackLevel);
+        #region Debug control
+        if (Input.IsActionJustPressed("stack_down"))
+		{
+			PlayerStackLevel = Mathf.Max(0, PlayerStackLevel - 1);
+		}
+
+		if (Input.IsActionJustPressed("stack_up"))
+		{
+			PlayerStackLevel = Mathf.Min(StackSystem.MaxStackLevel, PlayerStackLevel + 1);
+		}
+        #endregion
+
+        StackSystem.SetPlayerStackLevel(PlayerStackLevel);
+		uint levelMask = StackSystem.GetLevelCollisionBit(PlayerStackLevel);
+		CollisionLayer = levelMask;
+		CollisionMask = levelMask;
 		_stackBase?.ApplyVisualOffset(PlayerStackLevel, LevelHeight);
 		_stackBase?.UpdateInteractionState(PlayerStackLevel);
 		_stackBase?.UpdateShadow(PlayerStackLevel, false);
@@ -37,6 +56,11 @@ public partial class Player : CharacterBody2D
 		Vector2 direction = Input.GetVector("move_left", "move_right", "move_up", "move_down");
 		Velocity = direction * Speed;
 		MoveAndSlide();
+
+		if (direction == Vector2.Zero)
+		{
+			return;
+		}
 
 		System.Collections.Generic.HashSet<ulong> pushedThisFrame = new();
 		for (int i = 0; i < GetSlideCollisionCount(); i++)
@@ -49,6 +73,11 @@ public partial class Player : CharacterBody2D
 			}
 
 			Vector2 pushDir = -collision.GetNormal();
+			if (direction.Dot(pushDir) <= 0.1f)
+			{
+				continue;
+			}
+
 			Vector2 impulse = pushDir * Force;
 			if (collider is BoxController boxController)
 			{
